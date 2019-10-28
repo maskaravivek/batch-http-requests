@@ -19,7 +19,7 @@ class BatchHttpRequests {
   Future<String> getResponse(String url) async {
     HttpTuple response = await _getFromDB(url);
 
-    if (response.status == 'SUCCESS') {
+    if (response != null && response.status == 'SUCCESS') {
       return response.response;
     }
     return await _getFromHttp(url);
@@ -27,7 +27,7 @@ class BatchHttpRequests {
 
   Future<String> postResponse(String url, String data) async {
     HttpTuple response = await _postFromDB(url, data);
-    if (response.status == 'SUCCESS') {
+    if (response != null && response.status == 'SUCCESS') {
       return response.response;
     }
     return await _postFromHttp(url, data);
@@ -50,8 +50,7 @@ class BatchHttpRequests {
   Future<HttpTuple> _getFromDB(String url) async {
     HttpTuple response = await database.getResponseFromDB(url);
     if (response == null) {
-      await database.insertRequest(new HttpTuple(url));
-      return database.getResponseFromDB(url);
+      database.insertRequest(new HttpTuple(url));
     }
     return response;
   }
@@ -59,8 +58,7 @@ class BatchHttpRequests {
   Future<HttpTuple> _postFromDB(String url, String data) async {
     HttpTuple response = await database.getResponseFromDBWithData(url, data);
     if (response == null) {
-      await database.insertRequest(new HttpTuple.withUrlData(url, data));
-      return database.getResponseFromDBWithData(url, data);
+      database.insertRequest(new HttpTuple.withUrlData(url, data));
     }
     return response;
   }
