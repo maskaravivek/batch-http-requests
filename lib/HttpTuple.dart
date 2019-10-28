@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:batch_http_requests/Utils.dart';
 
 class HttpTuple {
@@ -7,7 +5,7 @@ class HttpTuple {
   String urlHash;
   String data;
   String dataHash;
-  Int64 cacheDuration;
+  int cacheDuration;
   String response;
   String status;
 
@@ -16,7 +14,7 @@ class HttpTuple {
     this.data = "";
     this.dataHash = Utils.hash(this.data);
     this.response = "";
-    this.cacheDuration = (60 * 60) as Int64; // 1 hour
+    this.cacheDuration = (60 * 60); // 1 hour
     this.status = "PENDING";
   }
 
@@ -25,7 +23,7 @@ class HttpTuple {
     this.dataHash = Utils.hash(this.data);
     this.response = "";
     this.status = "PENDING";
-    this.cacheDuration = (60 * 60) as Int64; // 1 hour
+    this.cacheDuration = (60 * 60); // 1 hour
   }
 
   HttpTuple.withUrlDataAndCache(this.url, this.data, this.cacheDuration) {
