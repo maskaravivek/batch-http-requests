@@ -11,7 +11,7 @@ class RequestsDatabase {
         onCreate: (db, version) {
       // Run the CREATE TABLE statement on the database.
       return db.execute(
-        "CREATE TABLE http_tuple(id INTEGER PRIMARY KEY, url TEXT, urlHash TEXT, data TEXT, dataHash TEXT, response TEXT, cacheDuration INTEGER)",
+        "CREATE TABLE http_tuple(id INTEGER PRIMARY KEY, url TEXT, urlHash TEXT, data TEXT, dataHash TEXT, response TEXT, cacheDuration INTEGER, status TEXT)",
       );
     }, version: 1);
   }

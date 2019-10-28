@@ -5,10 +5,11 @@ import 'package:batch_http_requests/requests_database.dart';
 import 'package:dio/dio.dart';
 
 class BatchHttpRequests {
-  final RequestsDatabase database;
+  RequestsDatabase database;
   Dio _dio;
 
-  BatchHttpRequests(this.database) {
+  BatchHttpRequests() {
+    this.database = RequestsDatabase();
     BaseOptions options =
         BaseOptions(receiveTimeout: 60000, connectTimeout: 60000);
     _dio = Dio(options);
