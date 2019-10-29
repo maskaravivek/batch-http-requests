@@ -1,5 +1,7 @@
 library batch_http_requests;
 
+import 'dart:convert';
+
 import 'package:batch_http_requests/HttpTuple.dart';
 import 'package:batch_http_requests/requests_database.dart';
 import 'package:dio/dio.dart';
@@ -35,14 +37,14 @@ class BatchHttpRequests {
 
   Future<String> _getFromHttp(String url) async {
     Response httpResponse = await _dio.get(url);
-    var response = httpResponse.data.toString();
+    var response = jsonEncode(httpResponse.data);
     database.updateRequest(url, "", response);
     return response;
   }
 
   Future<String> _postFromHttp(String url, String data) async {
     Response httpResponse = await _dio.post(url, data: data);
-    var response = httpResponse.data.toString();
+    var response = jsonEncode(httpResponse.data);
     database.updateRequest(url, data, response);
     return response;
   }
