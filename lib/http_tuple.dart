@@ -9,6 +9,7 @@ class HttpTuple {
   int cacheDuration;
   String response;
   String status;
+  int timestamp;
 
   HttpTuple(this.url) {
     this.id = 0;
@@ -16,8 +17,11 @@ class HttpTuple {
     this.data = "";
     this.dataHash = Utils.hash(this.data);
     this.response = "";
-    this.cacheDuration = (60 * 60); // 1 hour
+    this.cacheDuration = (60 * 60 * 1000); // 1 hour
     this.status = "PENDING";
+    this.timestamp = DateTime
+        .now()
+        .millisecondsSinceEpoch;
   }
 
   HttpTuple.withUrlData(this.url, this.data) {
@@ -26,7 +30,10 @@ class HttpTuple {
     this.dataHash = Utils.hash(this.data);
     this.response = "";
     this.status = "PENDING";
-    this.cacheDuration = (60 * 60); // 1 hour
+    this.cacheDuration = (60 * 60 * 1000); // 1 hour
+    this.timestamp = DateTime
+        .now()
+        .millisecondsSinceEpoch;
   }
 
   HttpTuple.withUrlDataAndCache(this.url, this.data, this.cacheDuration) {
@@ -35,11 +42,14 @@ class HttpTuple {
     this.dataHash = Utils.hash(this.data);
     this.response = "";
     this.status = "PENDING";
+    this.timestamp = DateTime
+        .now()
+        .millisecondsSinceEpoch;
   }
 
   HttpTuple.withEverything(this.id, this.url, this.urlHash, this.data,
       this.dataHash,
-      this.cacheDuration, this.response, this.status);
+      this.cacheDuration, this.response, this.status, this.timestamp);
 
   Map<String, dynamic> toMap() {
     return {
@@ -49,7 +59,8 @@ class HttpTuple {
       'dataHash': dataHash,
       'cacheDuration': cacheDuration,
       'response': response,
-      'status': status
+      'status': status,
+      'timestamp': timestamp
     };
   }
 
@@ -60,7 +71,8 @@ class HttpTuple {
         "dataHash: $dataHash\n"
         "cacheDuration: $cacheDuration\n"
         "response: $response\n"
-        "status: $status\n";
+        "status: $status\n"
+        "timestamp: $timestamp\n";
     return s;
   }
 }
