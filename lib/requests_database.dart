@@ -19,7 +19,7 @@ class RequestsDatabase {
   Future<void> insertRequest(HttpTuple httpTuple) async {
     final Database db = await getDatabase();
 
-    await db.insert(
+    return await db.insert(
       'http_tuple',
       httpTuple.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
@@ -29,7 +29,7 @@ class RequestsDatabase {
   Future<void> updateRequest(String url, String data, String response) async {
     final Database db = await getDatabase();
 
-    await db.rawUpdate(
+    return await db.rawUpdate(
         "UPDATE http_tuple SET response = ?, status = ? WHERE urlHash= ? AND dataHash= ?",
         [response, 'SUCCESS', Utils.hash(url), Utils.hash(data)]);
   }
