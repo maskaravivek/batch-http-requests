@@ -51,4 +51,15 @@ class HttpTuple {
       'status': status
     };
   }
+
+  String toString() {
+    String s = "url: $url"
+        "urlHash: $urlHash"
+        "data: $data"
+        "dataHash: $dataHash"
+        "cacheDuration: $cacheDuration"
+        "response: $response"
+        "status: $status";
+    return s;
+  }
 }
