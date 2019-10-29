@@ -43,7 +43,7 @@ class BatchHttpRequests {
     print("Making API call for URL: " + url);
     Response httpResponse = await _dio.get(url);
     var response = jsonEncode(httpResponse.data);
-    database.updateRequest(url, "", response);
+    database.updateRequest(url, response);
     return response;
   }
 
@@ -51,7 +51,7 @@ class BatchHttpRequests {
     print("Making API call for URL: " + url);
     Response httpResponse = await _dio.post(url, data: data);
     var response = jsonEncode(httpResponse.data);
-    database.updateRequest(url, data, response);
+    database.updateRequestWithData(url, data, response);
     return response;
   }
 

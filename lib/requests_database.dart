@@ -26,7 +26,15 @@ class RequestsDatabase {
     );
   }
 
-  Future<void> updateRequest(String url, String data, String response) async {
+  Future<void> updateRequest(String url, String response) async {
+    final Database db = await getDatabase();
+
+    return await db.rawUpdate(
+        "UPDATE http_tuple SET response = ?, status = ? WHERE urlHash= ?",
+        [response, 'SUCCESS', Utils.hash(url)]);
+  }
+
+  Future<void> updateRequestWithData(String url, String data, String response) async {
     final Database db = await getDatabase();
 
     return await db.rawUpdate(
