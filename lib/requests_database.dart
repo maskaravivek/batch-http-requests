@@ -1,4 +1,4 @@
-import 'package:batch_http_requests/HttpTuple.dart';
+import 'package:batch_http_requests/http_tuple.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -16,7 +16,7 @@ class RequestsDatabase {
     }, version: 1);
   }
 
-  Future<void> insertRequest(HttpTuple httpTuple) async {
+  Future<int> insertRequest(HttpTuple httpTuple) async {
     final Database db = await getDatabase();
 
     return await db.insert(
@@ -26,71 +26,70 @@ class RequestsDatabase {
     );
   }
 
-  Future<void> updateRequest(String url, String response) async {
+  Future<int> updateRequest(String url, String response) async {
     final Database db = await getDatabase();
 
+    var hash = Utils.hash(url);
     return await db.rawUpdate(
         "UPDATE http_tuple SET response = ?, status = ? WHERE urlHash= ?",
-        [response, 'SUCCESS', Utils.hash(url)]);
+        [response, 'SUCCESS', hash]);
   }
 
-  Future<void> updateRequestWithData(String url, String data, String response) async {
+  Future<int> updateRequestWithData(String url, String data,
+      String response) async {
     final Database db = await getDatabase();
 
+    var urlHash = Utils.hash(url);
+    var dataHash = Utils.hash(data);
     return await db.rawUpdate(
         "UPDATE http_tuple SET response = ?, status = ? WHERE urlHash= ? AND dataHash= ?",
-        [response, 'SUCCESS', Utils.hash(url), Utils.hash(data)]);
+        [response, 'SUCCESS', urlHash, dataHash]);
   }
 
   Future<List<HttpTuple>> getPendingRequests() async {
     final Database db = await getDatabase();
     final List<Map<String, dynamic>> maps =
         await db.query('http_tuple', where: "status='PENDING'");
-
-    return List.generate(maps.length, (i) {
-      return HttpTuple.withUrlDataAndCacheAndResponse(
-        maps[0]['url'],
-        maps[0]['data'],
-        maps[0]['cacheDuration'],
-        maps[0]['response'],
-        maps[0]['status'],
-      );
-    });
+    return List.generate(maps.length, (i) => getHttpTupleFromMap(maps[i]));
   }
 
   Future<HttpTuple> getResponseFromDBWithData(String url, String data) async {
     final Database db = await getDatabase();
+    var urlHash = Utils.hash(url);
+    var dataHash = Utils.hash(data);
     final List<Map<String, dynamic>> maps = await db.query('http_tuple',
         where: "status!='PENDING' AND urlHash= ? AND dataHash = ?",
-        whereArgs: [Utils.hash(url), Utils.hash(data)]);
+        whereArgs: [urlHash, dataHash]);
 
     if (maps == null || maps.length == 0) {
       return null;
     }
 
-    return HttpTuple.withUrlDataAndCacheAndResponse(
-      maps[0]['url'],
-      maps[0]['data'],
-      maps[0]['cacheDuration'],
-      maps[0]['response'],
-      maps[0]['status'],
-    );
+    return getHttpTupleFromMap(maps[0]);
   }
 
   Future<HttpTuple> getResponseFromDB(String url) async {
     final Database db = await getDatabase();
+    var urlHash = Utils.hash(url);
     final List<Map<String, dynamic>> maps = await db.query('http_tuple',
-        where: "status!='PENDING' AND urlHash='" + Utils.hash(url) + "'");
+        where: "status!='PENDING' AND urlHash= ?", whereArgs: [urlHash]);
     if (maps == null || maps.length == 0) {
       return null;
     }
 
-    return HttpTuple.withUrlDataAndCacheAndResponse(
-      maps[0]['url'],
-      maps[0]['data'],
-      maps[0]['cacheDuration'],
-      maps[0]['response'],
-      maps[0]['status'],
+    return getHttpTupleFromMap(maps[0]);
+  }
+
+  HttpTuple getHttpTupleFromMap(Map<String, dynamic> map) {
+    return HttpTuple.withEverything(
+      map['id'],
+      map['url'],
+      map['urlHash'],
+      map['data'],
+      map['dataHash'],
+      map['cacheDuration'],
+      map['response'],
+      map['status'],
     );
   }
 }

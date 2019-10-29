@@ -1,6 +1,7 @@
 import 'package:batch_http_requests/Utils.dart';
 
 class HttpTuple {
+  int id;
   final String url;
   String urlHash;
   String data;
@@ -10,6 +11,7 @@ class HttpTuple {
   String status;
 
   HttpTuple(this.url) {
+    this.id = 0;
     this.urlHash = Utils.hash(this.url);
     this.data = "";
     this.dataHash = Utils.hash(this.data);
@@ -19,6 +21,7 @@ class HttpTuple {
   }
 
   HttpTuple.withUrlData(this.url, this.data) {
+    this.id = 0;
     this.urlHash = Utils.hash(this.url);
     this.dataHash = Utils.hash(this.data);
     this.response = "";
@@ -27,18 +30,16 @@ class HttpTuple {
   }
 
   HttpTuple.withUrlDataAndCache(this.url, this.data, this.cacheDuration) {
+    this.id = 0;
     this.urlHash = Utils.hash(this.url);
     this.dataHash = Utils.hash(this.data);
     this.response = "";
     this.status = "PENDING";
   }
 
-  HttpTuple.withUrlDataAndCacheAndResponse(this.url, this.data, this.cacheDuration, this.response, this.status) {
-    this.urlHash = Utils.hash(this.url);
-    this.dataHash = Utils.hash(this.data);
-    this.response = "";
-    this.status = "PENDING";
-  }
+  HttpTuple.withEverything(this.id, this.url, this.urlHash, this.data,
+      this.dataHash,
+      this.cacheDuration, this.response, this.status);
 
   Map<String, dynamic> toMap() {
     return {
@@ -53,13 +54,13 @@ class HttpTuple {
   }
 
   String toString() {
-    String s = "url: $url"
-        "urlHash: $urlHash"
-        "data: $data"
-        "dataHash: $dataHash"
-        "cacheDuration: $cacheDuration"
-        "response: $response"
-        "status: $status";
+    String s = "url: $url\n"
+        "urlHash: $urlHash\n"
+        "data: $data\n"
+        "dataHash: $dataHash\n"
+        "cacheDuration: $cacheDuration\n"
+        "response: $response\n"
+        "status: $status\n";
     return s;
   }
 }
