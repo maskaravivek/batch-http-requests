@@ -1,7 +1,6 @@
 library batch_http_requests;
 
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:batch_http_requests/HttpTuple.dart';
 import 'package:batch_http_requests/requests_database.dart';
@@ -22,6 +21,7 @@ class BatchHttpRequests {
   Future<String> getResponse(String url) async {
     HttpTuple response = await _getFromDB(url);
 
+    print("response from DB is: " + response.toString());
     if (response != null && response.status == 'SUCCESS') {
       print("Returning API response from DB for URL: " + url);
       return response.response;
@@ -31,6 +31,7 @@ class BatchHttpRequests {
 
   Future<String> postResponse(String url, String data) async {
     HttpTuple response = await _postFromDB(url, data);
+    print("response from DB is: " + response.toString());
     if (response != null && response.status == 'SUCCESS') {
       print("Returning API response from DB for URL: " + url);
       return response.response;
