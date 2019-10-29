@@ -23,7 +23,7 @@ class BatchHttpRequests {
     HttpTuple response = await _getFromDB(url);
 
     if (response != null && response.status == 'SUCCESS') {
-      log("Returning API response from DB for URL: " + url);
+      print("Returning API response from DB for URL: " + url);
       return response.response;
     }
     return await _getFromHttp(url);
@@ -32,14 +32,14 @@ class BatchHttpRequests {
   Future<String> postResponse(String url, String data) async {
     HttpTuple response = await _postFromDB(url, data);
     if (response != null && response.status == 'SUCCESS') {
-      log("Returning API response from DB for URL: " + url);
+      print("Returning API response from DB for URL: " + url);
       return response.response;
     }
     return await _postFromHttp(url, data);
   }
 
   Future<String> _getFromHttp(String url) async {
-    log("Making API call for URL: " + url);
+    print("Making API call for URL: " + url);
     Response httpResponse = await _dio.get(url);
     var response = jsonEncode(httpResponse.data);
     database.updateRequest(url, "", response);
@@ -47,7 +47,7 @@ class BatchHttpRequests {
   }
 
   Future<String> _postFromHttp(String url, String data) async {
-    log("Making API call for URL: " + url);
+    print("Making API call for URL: " + url);
     Response httpResponse = await _dio.post(url, data: data);
     var response = jsonEncode(httpResponse.data);
     database.updateRequest(url, data, response);
@@ -57,7 +57,7 @@ class BatchHttpRequests {
   Future<HttpTuple> _getFromDB(String url) async {
     HttpTuple response = await database.getResponseFromDB(url);
     if (response == null) {
-      log("Received null response from DB for URL: " + url);
+      print("Received null response from DB for URL: " + url);
       database.insertRequest(new HttpTuple(url));
     }
     return response;
@@ -66,7 +66,7 @@ class BatchHttpRequests {
   Future<HttpTuple> _postFromDB(String url, String data) async {
     HttpTuple response = await database.getResponseFromDBWithData(url, data);
     if (response == null) {
-      log("Received null response from DB for URL: " + url);
+      print("Received null response from DB for URL: " + url);
       database.insertRequest(new HttpTuple.withUrlData(url, data));
     }
     return response;
