@@ -19,8 +19,8 @@ class BatchHttpRequests {
     _dio.interceptors.add(LogInterceptor(responseBody: true));
   }
 
-  Future<String> getResponse(String url) async {
-    HttpTuple response = await _getFromDB(url);
+  Future<String> getResponse(String url, int cacheDurationInSeconds) async {
+    HttpTuple response = await _getFromDB(url, cacheDurationInSeconds);
 
     if (response != null && response.status == 'SUCCESS') {
       print("Returning API response from DB");
@@ -29,8 +29,9 @@ class BatchHttpRequests {
     return await _getFromHttp(url);
   }
 
-  Future<String> postResponse(String url, String data) async {
-    HttpTuple response = await _postFromDB(url, data);
+  Future<String> postResponse(String url, String data,
+      int cacheDurationInSeconds) async {
+    HttpTuple response = await _postFromDB(url, data, cacheDurationInSeconds);
     print("response from DB is: " + response.toString());
     if (response != null && response.status == 'SUCCESS') {
       print("Returning API response from DB");
@@ -55,19 +56,19 @@ class BatchHttpRequests {
     return response;
   }
 
-  Future<HttpTuple> _getFromDB(String url) async {
+  Future<HttpTuple> _getFromDB(String url, int cacheDurationInSeconds) async {
     HttpTuple response = await database.getResponseFromDB(url);
     if (response == null) {
-      database.insertRequest(new HttpTuple(url));
+      database.insertRequest(new HttpTuple.withUrlAndCache(url, cacheDurationInSeconds));
     }
     return response;
   }
 
-  Future<HttpTuple> _postFromDB(String url, String data) async {
+  Future<HttpTuple> _postFromDB(String url, String data, int cacheDurationInSeconds) async {
     HttpTuple response = await database.getResponseFromDBWithData(url, data);
     if (response == null) {
       database.insertRequest(
-          new HttpTuple.withUrlData(url, data));
+          new HttpTuple.withUrlDataAndCache(url, data, cacheDurationInSeconds));
     }
     return response;
   }

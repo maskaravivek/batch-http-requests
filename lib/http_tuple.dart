@@ -17,7 +17,19 @@ class HttpTuple {
     this.data = "";
     this.dataHash = Utils.hash(this.data);
     this.response = "";
-    this.cacheDuration = (60 * 60 * 1000); // 1 hour
+    this.cacheDuration = (5 * 60 * 1000); // 1 hour
+    this.status = "PENDING";
+    this.timestamp = DateTime
+        .now()
+        .millisecondsSinceEpoch;
+  }
+
+  HttpTuple.withUrlAndCache(this.url, this.cacheDuration) {
+    this.id = 0;
+    this.urlHash = Utils.hash(this.url);
+    this.data = "";
+    this.dataHash = Utils.hash(this.data);
+    this.response = "";
     this.status = "PENDING";
     this.timestamp = DateTime
         .now()
@@ -30,7 +42,7 @@ class HttpTuple {
     this.dataHash = Utils.hash(this.data);
     this.response = "";
     this.status = "PENDING";
-    this.cacheDuration = (60 * 60 * 1000); // 1 hour
+    this.cacheDuration = (5 * 60 * 1000); // 1 hour
     this.timestamp = DateTime
         .now()
         .millisecondsSinceEpoch;
